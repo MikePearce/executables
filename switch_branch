@@ -1,13 +1,13 @@
 #!/bin/bash
-# create_branch.sh - Create branch
+# switch_branch.sh
 
 usage()
 {
-	echo "Usage: $0 [REPONAME] [BRANCH_NAME]"
+	echo "Usage: $0 [REPO_NAME] [BRANCH_NAME]\nWill switch your current working dir to the specified branch"
 	exit 1
 }
 
-# Show usage if nothing passed
+# Show usage if no options
 [[ $# -eq 0 ]] && usage
 
 # Do it

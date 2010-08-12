@@ -1,0 +1,15 @@
+#!/bin/bash
+# merge_branch.sh
+
+usage()
+{
+	echo "Usage: $0 [REPO_NAME] [BRANCH_NAME]\nWill merge the branch into the current working dir."
+	exit 1
+}
+
+# Show usage if no options
+[[ $# -eq 0 ]] && usage
+
+# Do it
+svn merge http://svn.affiliatewindow.com/$1/branches/$2 .
+

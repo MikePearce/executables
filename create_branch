@@ -3,7 +3,7 @@
 
 usage()
 {
-	echo "Usage: $0 [REPO_NAME] [BRANCH_NAME]"
+	echo "Usage: $0 [REPO_NAME] [BRANCH_NAME]\nWill create the specified branch"
 	exit 1
 }
 

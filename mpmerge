@@ -1,0 +1,101 @@
+#!/usr/bin/python
+
+# @desc Tired of having to go into each sub dir to find out whether or
+# not you did a git commit? Tire no more, just use this!
+#
+# @usage ./showstatus [location]
+# @author Mike Pearce <mike@mikepearce.net>
+# @since 18/05/2010
+
+# Grab some libraries
+import sys, string
+import os
+import glob
+import commands
+from optparse import OptionParser
+
+# Setup some stuff
+parser = OptionParser(usage="usage: %prog -d DRY-RUN -b BRANCHNAME -w WORKINGCOPY\
+", description="\
+mpmerge: for when you can't be bothered to type svn.affiliatewindow.com twice! \
+Instead, just pass the branch you want to merge and it'll pull that into \
+whatever your working copy is.\
+")
+parser.add_option("-d", "--dry",
+                    dest = "dryrun",
+                    action = "store_true",
+                    help = "If you just want to do a dry run",
+                    default = False
+                 )
+
+parser.add_option("-b", "--branch",
+                    action = "store",
+                    dest = "branch",
+                    default = "",
+                    help = "The branch you want pull down (should live at\
+                    /<projectname>/branches/<branchname>"
+                )
+
+parser.add_option("-w", "--working",
+                    action = "store",
+                    dest = "working_copy",
+                    default = ".",
+                    help = "Where do you want the merge performed (defaults \
+                    to '.')"
+                )
+
+# Now, parse the args
+(options, args) = parser.parse_args()
+
+#-------------------
+def show_error(error="Undefined Error!"):
+#-------------------
+    """Writes an error to stderr"""
+    sys.stderr.write(error)
+    sys.exit(1)
+
+
+#------------------------
+# Let's do this!
+#------------------------
+if __name__ == "__main__":
+
+    # Clear the screen
+    os.system('clear')
+
+    # Let's get some details
+    # Let's try and get the repo name
+    out = commands.getoutput('cd '+ options.working_copy +'; svn info')
+    lines = out.split('\n')
+    for line in lines:
+        # Get the repo url
+        if -1 != line.find('URL'):
+            current_repo_section = line.split(': ')[1]
+            # Assuming it's http://<url>/<reponame>
+            repo_name = current_repo_section.split("/")[3]
+            repo_root = current_repo_section.split("/")[2]
+    
+    # Inform of the start
+    if (True == options.dryrun) :
+        msg = '-- Starting the merge (with dry run)\n'
+    else:
+        msg = '-- Starting the merge \n'
+    sys.stdout.write(msg)
+
+    # Error if there isn't a branch or repo
+    if (options.branch == ''):
+        parser.error("You need to specify a branch.")
+
+    # Build the command
+    mergecmd = 'svn merge http://'+ repo_root +'/'+ repo_name +'/branches/'+ options.branch +' '+ options.working_copy
+
+    # If we're doing a dry run
+    if True == options.dryrun :
+        mergecmd = mergecmd + ' --dry-run'
+
+    # Actually do the command
+    out = commands.getoutput(mergecmd)
+
+    # Print the
+    sys.stdout.write(out+'\n\n')
+

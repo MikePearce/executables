@@ -1,0 +1,15 @@
+#!/bin/bash
+# create_branch.sh - Create branch
+
+usage()
+{
+	echo "Usage: $0 [REPONAME] [BRANCH_NAME]"
+	exit 1
+}
+
+# Show usage if nothing passed
+[[ $# -eq 0 ]] && usage
+
+# Do it
+svn switch http://svn.affiliatewindow.com/$1/branches/$2
+

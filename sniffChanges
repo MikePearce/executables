@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 # @desc     Grab the changed files using 'svn st' then run sniffer on those.
+# @install  Put in directory in $PATH. chmod+x the file.
 # @author   Mike Pearce <mike@mikepearce.net>
 # @since    18/05/2010
 
@@ -36,9 +37,9 @@ if __name__ == "__main__":
         for line in out.split('\n'):
             out = commands.getoutput('/usr/local/php5/bin/phpcs '+ line[5:]);
 	    if out.find('not found'):
-		show_error('You do not have PHPCS installed!')
+		    show_error('You do not have PHPCS installed!')
 	    else:
-            	sys.stdout.write(out)
+            sys.stdout.write(out)
 
     else:
         show_error('This is not an svn repo.')

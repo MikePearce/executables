@@ -1,0 +1,18 @@
+#!/bin/bash
+# post_review.sh
+
+usage()
+{
+	echo "Usage: $0 [REVIEW_NUMBER]"
+	echo "Posts a review using post-review to reviewboard without having to type URLs."
+	exit 1
+}
+
+# Do it
+if test -z $1
+then
+	post-review -o --server=http://reviewboard.affiliatewindow.com
+else
+	post-review -o -r$1 --server=http://reviewboard.affiliatewindow.com
+fi
+

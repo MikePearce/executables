@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+# @desc     Grab the changed files using 'svn st' then run sniffer on those.
+# @author   Mike Pearce <mike@mikepearce.net>
+# @since    18/05/2010
+
+# Grab some libraries
+import os
+import sys
+import commands
+
+
+#-------------------
+def show_error(error="Undefined Error!", exitcode = 1):
+#-------------------
+    """Writes an error to stderr"""
+    sys.stderr.write(error +"\n")
+    sys.exit(exitcode)
+
+#-------------------
+# Now, onto the main event!
+#-------------------
+if __name__ == "__main__":
+
+    # First, make sure we've got a .svn dir
+    if os.path.exists('.svn'):
+
+        # First, run svn st
+        out = commands.getoutput('svn st');
+
+        # Check we have changed files
+        if ( len(out) == 0 ):
+            show_error('There are no changed files', 0)
+
+        # For each change, run phpcs
+        for line in out.split('\n'):
+            out = commands.getoutput('/usr/local/php5/bin/phpcs '+ line[5:]);
+	    if out.find('not found'):
+		show_error('You do not have PHPCS installed!')
+	    else:
+            	sys.stdout.write(out)
+
+    else:
+        show_error('This is not an svn repo.')

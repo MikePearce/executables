@@ -1,0 +1,15 @@
+#!/bin/bash
+# switch_branch.sh
+
+usage()
+{
+	echo "Usage: $0 [REPO_NAME] [BRANCH_NAME]\nWill switch your current working dir to the specified branch"
+	exit 1
+}
+
+# Show usage if no options
+[[ $# -eq 0 ]] && usage
+
+# Do it
+svn switch http://svn.affiliatewindow.com/$1/trunk
+

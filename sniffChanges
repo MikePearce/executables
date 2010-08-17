@@ -35,9 +35,13 @@ if __name__ == "__main__":
 
         # For each change, run phpcs
         for line in out.split('\n'):
-            out = commands.getoutput('/usr/local/php5/bin/phpcs '+ line[5:]);
-	    if out.find('not found'):
-		    show_error('You do not have PHPCS installed!')
+        
+            # Make sure teh change ISN'T root
+            if (line[5:] != '.'):
+                out = commands.getoutput('/usr/local/php5/bin/phpcs '+ line[5:]);
+                
+	            if out.find('not found'):
+		            show_error('You do not have PHPCS installed!')
 	    else:
             sys.stdout.write(out)
 

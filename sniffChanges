@@ -35,15 +35,25 @@ if __name__ == "__main__":
 
         # For each change, run phpcs
         for line in out.split('\n'):
-        
-            # Make sure teh change ISN'T root
-            if (line[5:] != '.'):
-                out = commands.getoutput('/usr/local/php5/bin/phpcs '+ line[5:]);
-                
-	            if out.find('not found'):
-		            show_error('You do not have PHPCS installed!')
-	    else:
-            sys.stdout.write(out)
 
+            # Make sure teh change ISN'T root
+            if (line[8:] != '.'):
+
+                # Inform
+                #sys.stdout.write('Sniffing "'+ line[8:] +'"\n')
+
+                # Run the command
+                cmd = '/usr/local/php5/bin/phpcs '+ line[8:]
+                out = commands.getoutput(cmd);
+
+                # If codesniffr isn't installed
+                if ( out.find('No such file or directory') != -1 ):
+                    show_error('You do not have PHPCS installed!\n'+out)
+                else:
+                    sys.stdout.write(out)
+
+    # Maybe it's git?
+    #else:
     else:
-        show_error('This is not an svn repo.')
+	show_error('This is not an svn repo.')
+

@@ -17,6 +17,43 @@ def show_error(error="Undefined Error!", exitcode = 1):
     """Writes an error to stderr"""
     sys.stderr.write(error +"\n")
     sys.exit(exitcode)
+    
+def getChangesAndSniff(gitOrSvn='svn'):
+    """ Based on the Repo Type, will grab all the changes and sniff them! """
+     # First, run svn st
+    if (gitOrSvn == 'svn'):
+        cmd = 'svn st'
+        prePadding = 8
+    else:
+        cms = 'git status -s'
+        prePadding = 3
+
+    # Run the command    
+    out = commands.getoutput(cmd);
+
+    # Check we have changed files
+    if ( len(out) == 0 ):
+        show_error('There are no changed files', 0)
+
+    # For each change, run phpcs
+    for line in out.split('\n'):
+
+        # Make sure teh change ISN'T root
+        if (line[prePadding:] != '.'):
+
+            # Inform
+            #sys.stdout.write('Sniffing "'+ line[prePadding:] +'"\n')
+
+            # Run the command
+            cmd = '/usr/local/php5/bin/phpcs '+ line[prePadding:]
+            out = commands.getoutput(cmd);
+
+            # If codesniffr isn't installed
+            if ( out.find('No such file or directory') != -1 ):
+                show_error('You do not have PHPCS installed!\n'+out)
+            else:
+                sys.stdout.write(out)
+
 
 #-------------------
 # Now, onto the main event!
@@ -25,35 +62,11 @@ if __name__ == "__main__":
 
     # First, make sure we've got a .svn dir
     if os.path.exists('.svn'):
-
-        # First, run svn st
-        out = commands.getoutput('svn st');
-
-        # Check we have changed files
-        if ( len(out) == 0 ):
-            show_error('There are no changed files', 0)
-
-        # For each change, run phpcs
-        for line in out.split('\n'):
-
-            # Make sure teh change ISN'T root
-            if (line[8:] != '.'):
-
-                # Inform
-                #sys.stdout.write('Sniffing "'+ line[8:] +'"\n')
-
-                # Run the command
-                cmd = '/usr/local/php5/bin/phpcs '+ line[8:]
-                out = commands.getoutput(cmd);
-
-                # If codesniffr isn't installed
-                if ( out.find('No such file or directory') != -1 ):
-                    show_error('You do not have PHPCS installed!\n'+out)
-                else:
-                    sys.stdout.write(out)
-
+       getChangesAndSniff('svn')
     # Maybe it's git?
-    #else:
+    elif (os.path.exists('.git')):
+       getChangesAndSniff('git')    
+    # It's neither
     else:
-	show_error('This is not an svn repo.')
+	    show_error('This is not an svn or a git repo.')
 

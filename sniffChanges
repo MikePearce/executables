@@ -55,7 +55,7 @@ def getChangesAndSniff(gitOrSvn='svn'):
     for line in out.split('\n'):
 
         # Make sure teh change ISN'T root
-        if (line[prePadding:] != '.'):
+        if (line[prePadding:] != '.' and line[:prePadding].find('D') == -1):
 
             # Run the command
             cmd = '/usr/local/php5/bin/phpcs '+ line[prePadding:]

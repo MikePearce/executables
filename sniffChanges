@@ -84,5 +84,5 @@ if __name__ == "__main__":
        getChangesAndSniff('git')    
     # It's neither
     else:
-	    show_error('This is not an svn or a git repo.')
+      show_error('This is not an svn or a git repo.')
 

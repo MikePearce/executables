@@ -2,6 +2,7 @@
 
 # @desc     Grab the changed files using 'svn st' then run sniffer on those.
 # @install  Put in directory in $PATH. chmod+x the file.
+# @deps     termcolor >= 0.1.2
 # @author   Mike Pearce <mike@mikepearce.net>
 # @since    18/05/2010
 
@@ -9,16 +10,31 @@
 import os
 import sys
 import commands
+from termcolor import colored
 
 
 #-------------------
 def show_error(error="Undefined Error!", exitcode = 1):
 #-------------------
     """Writes an error to stderr"""
-    sys.stderr.write(error +"\n")
+    print colored(error, 'yellow', 'on_red')
     sys.exit(exitcode)
     
+#-------------------
+def printGood(msg):
+#-------------------
+    print colored(msg, 'white', 'on_green')
+
+#-------------------
+def printBad(msg):
+#-------------------
+    print colored(msg, 'white', 'on_red')
+    
+    
+
+#-------------------
 def getChangesAndSniff(gitOrSvn='svn'):
+#-------------------
     """ Based on the Repo Type, will grab all the changes and sniff them! """
      # First, run svn st
     if (gitOrSvn == 'svn'):
@@ -41,18 +57,18 @@ def getChangesAndSniff(gitOrSvn='svn'):
         # Make sure teh change ISN'T root
         if (line[prePadding:] != '.'):
 
-            # Inform
-            #sys.stdout.write('Sniffing "'+ line[prePadding:] +'"\n')
-
             # Run the command
             cmd = '/usr/local/php5/bin/phpcs '+ line[prePadding:]
             out = commands.getoutput(cmd);
 
             # If codesniffr isn't installed
-            if ( out.find('No such file or directory') != -1 ):
+            if (out == ''):
+                printGood('Sniffed "'+ line[prePadding:] +'"')
+            elif ( out.find('No such file or directory') != -1 ):
                 show_error('You do not have PHPCS installed!\n'+out)
             else:
-                sys.stdout.write(out)
+                printBad(out)
+
 
 
 #-------------------

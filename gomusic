@@ -1,0 +1,21 @@
+#!/bin/bash
+# Change directory
+cd "/Users/mikeypearce/Music/iTunes/iTunes Music/Music"
+
+# Look at all the files
+files=(*)
+
+#printf "%s\n" "${files[RANDOM % ${#files[@]}]}"
+
+# Get the artist randomly
+ARTIST="${files[RANDOM % ${#files[@]}]}"
+
+# Change dir
+cd ./"$ARTIST"/
+
+# Then get a random Album
+files=(*)
+ALBUM="${files[RANDOM % ${#files[@]}]}"
+
+# Then play the album
+mplayer ./"$ALBUM"/*
